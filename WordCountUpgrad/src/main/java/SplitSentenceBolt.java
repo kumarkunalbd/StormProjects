@@ -11,6 +11,7 @@ import org.apache.storm.tuple.Values;
 public class SplitSentenceBolt extends BaseRichBolt
 {
     private OutputCollector collector;
+    
 
     public void prepare(Map config, TopologyContext context, OutputCollector collector)
     {
@@ -23,8 +24,14 @@ public class SplitSentenceBolt extends BaseRichBolt
         String[] words = sentence.split(" ");
         for(String word : words)
         {
-            this.collector.emit(new Values(word));
+        	word = word.trim();
+        	if(! word.isEmpty()) {
+        		this.collector.emit(tuple,new Values(word));
+        	}
         }
+        
+        this.collector.ack(tuple);
+        //this.collector.fail(tuple);
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) 

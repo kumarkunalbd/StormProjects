@@ -27,11 +27,11 @@ public class WordCountTopology {
 
         builder.setSpout(SENTENCE_SPOUT_ID, spout,1);
         // SentenceSpout --> SplitSentenceBolt
-        builder.setBolt(SPLIT_BOLT_ID, splitBolt,2)
+        builder.setBolt(SPLIT_BOLT_ID, splitBolt,3)
                 .shuffleGrouping(SENTENCE_SPOUT_ID);
         // SplitSentenceBolt --> WordCountBolt
         builder.setBolt(COUNT_BOLT_ID, countBolt,4)
-                .fieldsGrouping(SPLIT_BOLT_ID, new Fields("word"));
+                .shuffleGrouping(SPLIT_BOLT_ID);
         // WordCountBolt --> ReportBolt
         builder.setBolt(REPORT_BOLT_ID, reportBolt,1)
                 .globalGrouping(COUNT_BOLT_ID);
