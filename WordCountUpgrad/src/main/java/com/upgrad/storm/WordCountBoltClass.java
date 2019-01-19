@@ -1,3 +1,4 @@
+package com.upgrad.storm;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.storm.task.OutputCollector;
@@ -8,7 +9,7 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-public class WordCountBolt extends BaseRichBolt
+public class WordCountBoltClass extends BaseRichBolt
 {
     private OutputCollector collector;
     private HashMap<String, Long> counts = null;
@@ -30,7 +31,12 @@ public class WordCountBolt extends BaseRichBolt
         }
         count++;
         this.counts.put(word, count);
+        
+        /*Anchoring the SplitSentence Bolt*/
+
         this.collector.emit(tuple,new Values(word, count));
+        
+        /*Acknowledging the Tuple*/
         this.collector.ack(tuple);
         
     }

@@ -1,4 +1,5 @@
-import java.io.FileNotFoundException;
+package com.upgrad.storm;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,12 +17,16 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;
 
-import com.mysql.jdbc.PreparedStatement;
 
-public class ReportBolt extends BaseRichBolt 
+
+public class ReportBoltClass extends BaseRichBolt 
 {
 
-    private HashMap<String, Long> ReportCounts = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private HashMap<String, Long> ReportCounts = null;
     //private HashMap<String, Long> wordAggregateCounts = null;
     int temp_count_variable=0;
     private Connection con;
@@ -56,6 +61,7 @@ public class ReportBolt extends BaseRichBolt
         String word = tuple.getStringByField("word");
         Long count = tuple.getLongByField("count");
         
+        /*If the word is already available in Report bolt the update its count. Otherwise Add the count with word as ney key*/
         if(this.ReportCounts.containsKey(word)) {
         	Long lastCount = this.ReportCounts.get(word);
         	Long updatedCount = count+lastCount;
@@ -71,18 +77,22 @@ public class ReportBolt extends BaseRichBolt
             keys.addAll(this.ReportCounts.keySet());
             Collections.sort(keys);
             for (String key : keys) {
-            	String selectQueryCountWord = "select wordcount from wordcount_assignment_v2 where word='"+key+"'";
+            	String selectQueryCountWord = "select wordcount from wordcount_assignment where word='"+key+"'";
             	try {
         			ResultSet resultSet  = stmt.executeQuery(selectQueryCountWord);
         			if(resultSet.next()) {
-        				String updateQuery = "update wordcount_assignment_v2 set wordcount ="+this.ReportCounts.get(key)+" where word = '"+key+"'";
+        				String updateQuery = "update wordcount_assignment set wordcount ="+this.ReportCounts.get(key)+" where word = '"+key+"'";
         				boolean isDataUpdated = stmt.execute(updateQuery);
         			}else {
-        				String insertQuery = "INSERT INTO wordcount_assignment_v2(word,wordcount) VALUES ('"+key+"',"+this.ReportCounts.get(key)+")";
+        				String insertQuery = "INSERT INTO wordcount_assignment(word,wordcount) VALUES ('"+key+"',"+this.ReportCounts.get(key)+")";
         				boolean isDataInserted = stmt.execute(insertQuery);
         			}
         		} catch (SQLException e) {
         			// TODO Auto-generated catch block
+        			
+        			/*Failing the tuple*/
+        			
+        			//this.collector.fail(tuple);
         			e.printStackTrace();
         		}
             	
@@ -90,24 +100,11 @@ public class ReportBolt extends BaseRichBolt
             }
         }
         
-        /*String selectQueryCountWord = "select wordcount from wordcount_assignment_v2 where word='"+word+"'";
-        try {
-			ResultSet resultSet  = stmt.executeQuery(selectQueryCountWord);
-			if(resultSet.next()) {
-				long existingWordCount = resultSet.getLong("wordcount");
-				long updatedWordCount = existingWordCount+count;
-				String updateQuery = "update wordcount_assignment_v2 set count ="+updatedWordCount+"where word = '"+word+"'";
-				boolean isDataUpdated = stmt.execute(updateQuery);
-			}else {
-				String insertQuery = "INSERT INTO wordcount_assignment_v2(word,wordcount) VALUES ('"+word+"',"+count+")";
-				boolean isDataInserted = stmt.execute(insertQuery);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}*/
+  
         
         
         
+        /*Acknowledging the Tuple*/
         
         this.collector.ack(tuple);
     }

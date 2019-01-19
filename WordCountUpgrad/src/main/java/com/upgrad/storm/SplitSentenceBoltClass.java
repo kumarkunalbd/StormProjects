@@ -1,3 +1,4 @@
+package com.upgrad.storm;
 import java.util.Map;
 
 import org.apache.storm.task.OutputCollector;
@@ -8,7 +9,7 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-public class SplitSentenceBolt extends BaseRichBolt
+public class SplitSentenceBoltClass extends BaseRichBolt
 {
     private OutputCollector collector;
     
@@ -22,6 +23,9 @@ public class SplitSentenceBolt extends BaseRichBolt
     {
         String sentence = tuple.getStringByField("sentence");
         String[] words = sentence.split(" ");
+        
+        /*Anchoring the SplitSentence Bolt*/
+        
         for(String word : words)
         {
         	word = word.trim();
@@ -30,8 +34,10 @@ public class SplitSentenceBolt extends BaseRichBolt
         	}
         }
         
+        /*Acknowledging the Tuple*/
+        
         this.collector.ack(tuple);
-        //this.collector.fail(tuple);
+        
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) 
