@@ -11,7 +11,11 @@ import org.apache.storm.tuple.Values;
 
 public class WordCountBoltClass extends BaseRichBolt
 {
-    private OutputCollector collector;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private OutputCollector collector;
     private HashMap<String, Long> counts = null;
 
     public void prepare(Map config, TopologyContext context, 

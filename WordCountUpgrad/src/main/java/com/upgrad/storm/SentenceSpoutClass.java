@@ -10,7 +10,11 @@ import org.apache.storm.utils.Utils;
 
 public class SentenceSpoutClass extends BaseRichSpout {
 
-    private SpoutOutputCollector collector;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private SpoutOutputCollector collector;
     private int numberOfAcknowldgedMessages =0;
     private int numberOfFailedMessages =0;
     private long numberofMessages = 0;

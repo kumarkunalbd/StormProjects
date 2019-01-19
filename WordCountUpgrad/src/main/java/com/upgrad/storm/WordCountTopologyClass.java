@@ -10,11 +10,11 @@ import org.apache.storm.tuple.Values;
 import org.apache.storm.utils.Utils;
 public class WordCountTopologyClass {
 
-    private static final String SENTENCE_SPOUT_ID = "SentenceSpout";
-    private static final String SPLIT_BOLT_ID = "SplitSentenceBolt";
-    private static final String COUNT_BOLT_ID = "WordCountBolt";
-    private static final String REPORT_BOLT_ID = "ReportBolt";
-    private static final String TOPOLOGY_NAME = "word-count-topology";
+    private static final String SENTENCE_SPOUT_ID = "SentenceSpoutClass";
+    private static final String SPLIT_BOLT_ID = "SplitSentenceBoltClass";
+    private static final String COUNT_BOLT_ID = "WordCountBoltClass";
+    private static final String REPORT_BOLT_ID = "ReportBoltClass";
+    
 
     public static void main(String[] args) throws Exception {
 
